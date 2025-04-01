@@ -16,7 +16,7 @@ class SocketService {
   Future<void> initSocket() async {
     String token = await _storage.read(key: 'token') ?? '';
     _socket = IO.io(
-      'http://10.91.52.49:6000',
+      'http://localhost:6000',
       IO.OptionBuilder()
         .setTransports(['websocket'])
         .disableAutoConnect()
