@@ -3,15 +3,18 @@ import 'package:chat_app/features/chat/data/datasource/messages_remote_data_sour
 import 'package:chat_app/features/chat/data/repositories/message_repository_impl.dart';
 import 'package:chat_app/features/chat/domain/usecases/fetch_messages_use_case.dart';
 import 'package:chat_app/features/chat/presentation/bloc/chat_bloc.dart';
-import 'package:chat_app/features/chat/presentation/pages/chat_page.dart';
 import 'package:chat_app/core/theme.dart';
 import 'package:chat_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:chat_app/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:chat_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:chat_app/features/auth/domain/usecases/login_use_case.dart';
 import 'package:chat_app/features/auth/domain/usecases/register_use_case.dart';
 import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:chat_app/features/auth/presentation/pages/login_page.dart';
+import 'package:chat_app/features/contacts/data/datasources/contacts_remote_data_source.dart';
+import 'package:chat_app/features/contacts/data/repositories/contacts_repository_impl.dart';
+import 'package:chat_app/features/contacts/domain/usecases/add_contact_usecase.dart';
+import 'package:chat_app/features/contacts/domain/usecases/fetch_contacts_usecase.dart';
+import 'package:chat_app/features/contacts/presentation/bloc/contacts_bloc.dart';
 import 'package:chat_app/features/conversation/data/datasources/conversation_remote_data_source.dart';
 import 'package:chat_app/features/conversation/data/repositories/conversations_repository_impl.dart';
 import 'package:chat_app/features/conversation/domain/repository/conversation_repository.dart';
@@ -25,18 +28,35 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 void main() async {
   final socketService = SocketService();
   await socketService.initSocket();
-  final authRepository = AuthRepositoryImpl(authRemoteDataSource: AuthRemoteDataSource());
-  final conversationRepository = ConversationsRepositoryImpl(conversationRemoteDataSource: ConversationRemoteDataSource());
-  final messagesRepository = MessageRepositoryImpl(remoteDataSource: MessagesRemoteDataSource());
-  runApp(MyApp(authRepository: authRepository, conversationRepository: conversationRepository, messageRepository: messagesRepository,));
+  final authRepository =
+      AuthRepositoryImpl(authRemoteDataSource: AuthRemoteDataSource());
+  final conversationRepository = ConversationsRepositoryImpl(
+      conversationRemoteDataSource: ConversationRemoteDataSource());
+  final messagesRepository =
+      MessageRepositoryImpl(remoteDataSource: MessagesRemoteDataSource());
+  final contactsRepository =
+      ContactsRepositoryImpl(remoteDataSource: ContactsRemoteDataSource());
+  runApp(MyApp(
+    authRepository: authRepository,
+    conversationRepository: conversationRepository,
+    messageRepository: messagesRepository,
+    contactsRepository: contactsRepository,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final AuthRepositoryImpl authRepository;
   final ConversationRepository conversationRepository;
   final MessageRepositoryImpl messageRepository;
+  final ContactsRepositoryImpl contactsRepository;
 
-  const MyApp({super.key, required this.authRepository, required this.conversationRepository, required this.messageRepository,});
+  const MyApp({
+    super.key,
+    required this.authRepository,
+    required this.conversationRepository,
+    required this.messageRepository,
+    required this.contactsRepository,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +70,22 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => ConversationsBloc(
-            fetchConversationsUseCase: FetchConversationsUseCase(conversationRepository),
+            fetchConversationsUseCase:
+                FetchConversationsUseCase(conversationRepository),
           ),
         ),
         BlocProvider(
           create: (_) => ChatBloc(
-            fetchMessagesUseCase: FetchMessagesUseCase(messageRepository: messageRepository),
+            fetchMessagesUseCase:
+                FetchMessagesUseCase(messageRepository: messageRepository),
+          ),
+        ),
+        BlocProvider(
+          create: (_) => ContactsBloc(
+            addContactUsecase:
+                AddContactUsecase(contactsRepository: contactsRepository),
+            fetchContactsUseCase:
+                FetchContactsUseCase(contactsRepository: contactsRepository),
           ),
         ),
       ],
