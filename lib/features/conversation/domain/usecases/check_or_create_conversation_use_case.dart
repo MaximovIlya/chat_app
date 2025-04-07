@@ -1,11 +1,11 @@
 import 'package:chat_app/features/conversation/domain/repository/conversation_repository.dart';
 
 class CheckOrCreateConversationUseCase {
-  final ConversationRepository repository;
+  final ConversationRepository conversationRepository;
 
-  CheckOrCreateConversationUseCase({required this.repository});
+  CheckOrCreateConversationUseCase({required this.conversationRepository});
 
   Future<String> call({required String contactId}) async {
-    return repository.checkOrCreateConversation(contactId: contactId);
+    return conversationRepository.checkOrCreateConversation(contactId: contactId);
   }
 }

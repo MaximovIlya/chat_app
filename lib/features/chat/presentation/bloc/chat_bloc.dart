@@ -27,6 +27,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       _messages.addAll(messages);
       emit(ChatLoadedState(List.from(_messages)));
 
+      _socketService.socket.off('newMessage');
+
       _socketService.socket.emit('joinConversation', event.conversationId);
       _socketService.socket.on('newMessage', (data) {
         print('step1 - recieve : $data');
