@@ -15,3 +15,9 @@ class RecieveMessageEvent extends ChatEvent {
   final Map<String, dynamic> message;
   RecieveMessageEvent(this.message);
 }
+
+class LoadDailyQuestionEvent extends ChatEvent {
+  final String coversationId;
+
+  LoadDailyQuestionEvent(this.coversationId);
+}

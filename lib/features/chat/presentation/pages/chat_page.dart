@@ -19,12 +19,14 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final _storage = FlutterSecureStorage();
   String userId = '';
+  String botId = '00000000-0000-0000-0000-000000000000';
 
   @override
   void initState() {
     super.initState();
     BlocProvider.of<ChatBloc>(context)
         .add(LoadMessagesEvent(widget.conversationId));
+
     fetchUserId();
   }
 
@@ -54,6 +56,7 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
         elevation: 0,
         actions: [
           IconButton(
@@ -67,8 +70,8 @@ class _ChatPageState extends State<ChatPage> {
         title: Row(
           children: [
             CircleAvatar(
-              //backgroundImage: NetworkImage(''),
-            ),
+                //backgroundImage: NetworkImage(''),
+                ),
             SizedBox(
               width: 10,
             ),
@@ -95,8 +98,12 @@ class _ChatPageState extends State<ChatPage> {
                     itemBuilder: (context, index) {
                       final message = state.messages[index];
                       final isSentMessage = message.senderId == userId;
+                      final isDailyQuestion = message.senderId == botId;
                       if (isSentMessage) {
                         return _buildSendMessage(context, message.content);
+                      } else if (isDailyQuestion) {
+                        return _buildDailyQuestionMessage(
+                            context, message.content);
                       } else {
                         return _buildReceiveMessage(context, message.content);
                       }
@@ -204,13 +211,33 @@ class _ChatPageState extends State<ChatPage> {
             width: 10,
           ),
           GestureDetector(
+            onTap: _sendMessage,
             child: Icon(
               Icons.send,
               color: Colors.grey,
             ),
-            onTap: _sendMessage,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDailyQuestionMessage(BuildContext context, String message) {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          vertical: 10,
+        ),
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: DefaultColors.dailyQuestionColor,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Text(
+          "🧠 Daily Question : $message",
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+        ),
       ),
     );
   }
