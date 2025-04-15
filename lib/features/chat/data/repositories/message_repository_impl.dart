@@ -22,4 +22,9 @@ class MessageRepositoryImpl implements MessageRepository {
   Future<DailyQuestionEntity> fetchDailyQuestion(String conversationId) async {
     return await remoteDataSource.fetchDailyQuestion(conversationId);
   }
+  
+  @override
+  Future<String> convertToFormal(String message) async {
+    return await remoteDataSource.convertToFormal(message);
+  }
 }

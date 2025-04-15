@@ -21,3 +21,8 @@ class LoadDailyQuestionEvent extends ChatEvent {
 
   LoadDailyQuestionEvent(this.coversationId);
 }
+
+class ConvertToFormalEvent extends ChatEvent {
+  final String message;
+  ConvertToFormalEvent(this.message);
+}

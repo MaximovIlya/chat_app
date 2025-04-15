@@ -19,6 +19,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
   final _storage = FlutterSecureStorage();
   String userId = '';
+  String? _aiGeneratedMessage;
   String botId = '00000000-0000-0000-0000-000000000000';
 
   @override
@@ -43,6 +44,13 @@ class _ChatPageState extends State<ChatPage> {
       BlocProvider.of<ChatBloc>(context)
           .add(SendMessageEvent(widget.conversationId, content));
       _messageController.clear();
+    }
+  }
+
+  void _convertToFormal() {
+    final content = _messageController.text.trim();
+    if (content.isNotEmpty) {
+      BlocProvider.of<ChatBloc>(context).add(ConvertToFormalEvent(content));
     }
   }
 
@@ -120,6 +128,19 @@ class _ChatPageState extends State<ChatPage> {
               },
             ),
           ),
+          _messageStyleButtons(),
+          if (_aiGeneratedMessage != null)
+            _buildAiMessagePreview(_aiGeneratedMessage!),
+          BlocListener<ChatBloc, ChatState>(
+            listener: (context, state) {
+              if (state is FormalMessageLoadedState) {
+                setState(() {
+                  _aiGeneratedMessage = state.message;
+                });
+              }
+            },
+            child: SizedBox.shrink(),
+          ),
           _buildMessageInput(),
         ],
       ),
@@ -170,13 +191,83 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  Widget _messageStyleButtons() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 25),
+      padding: EdgeInsets.symmetric(
+        horizontal: 15,
+      ),
+      child: Row(
+        children: [
+          ElevatedButton(
+            onPressed: _convertToFormal,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: DefaultColors.dailyQuestionColor,
+            ),
+            child: Text(
+              'Formal',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: DefaultColors.dailyQuestionColor,
+            ),
+            child: Text(
+              'Slang',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: DefaultColors.dailyQuestionColor,
+            ),
+            child: Text(
+              'Humorous',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: DefaultColors.dailyQuestionColor,
+            ),
+            child: Text(
+              'Romantic',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMessageInput() {
     return Container(
       decoration: BoxDecoration(
         color: DefaultColors.sentMessageInput,
         borderRadius: BorderRadius.circular(25),
       ),
-      margin: EdgeInsets.all(25),
+      margin: EdgeInsets.fromLTRB(25, 10, 25, 25),
       padding: EdgeInsets.symmetric(
         horizontal: 15,
       ),
@@ -236,8 +327,57 @@ class _ChatPageState extends State<ChatPage> {
         ),
         child: Text(
           "🧠 Daily Question : $message",
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70),
+          style: Theme.of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(color: Colors.white70),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAiMessagePreview(String message) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(25, 10, 25, 0),
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: const Color.fromARGB(255, 164, 203, 222),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              message,
+              textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          GestureDetector(
+            child: Icon(
+              Icons.check,
+              color: DefaultColors.messageListPage,
+            ),
+            onTap: () {
+              setState(() {
+                _messageController.text = message;
+                _aiGeneratedMessage = null;
+              });
+            },
+          ),
+          GestureDetector(
+            child: Icon(
+              Icons.close,
+              color: DefaultColors.messageListPage,
+            ),
+            onTap: () {
+              setState(() {
+                _aiGeneratedMessage = null;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
