@@ -2,6 +2,9 @@ import 'package:chat_app/core/socket_service.dart';
 import 'package:chat_app/features/chat/data/datasource/messages_remote_data_source.dart';
 import 'package:chat_app/features/chat/data/repositories/message_repository_impl.dart';
 import 'package:chat_app/features/chat/domain/usecases/convert_to_formal_use_case.dart';
+import 'package:chat_app/features/chat/domain/usecases/convert_to_humorous_use_case.dart';
+import 'package:chat_app/features/chat/domain/usecases/convert_to_romantic_use_case.dart';
+import 'package:chat_app/features/chat/domain/usecases/convert_to_slang_use_case.dart';
 import 'package:chat_app/features/chat/domain/usecases/fetch_daily_question_use_case.dart';
 import 'package:chat_app/features/chat/domain/usecases/fetch_messages_use_case.dart';
 import 'package:chat_app/features/chat/presentation/bloc/chat_bloc.dart';
@@ -12,6 +15,7 @@ import 'package:chat_app/features/auth/domain/usecases/login_use_case.dart';
 import 'package:chat_app/features/auth/domain/usecases/register_use_case.dart';
 import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:chat_app/features/auth/presentation/pages/login_page.dart';
+import 'package:chat_app/features/chat/presentation/bloc/styles_bloc.dart';
 import 'package:chat_app/features/contacts/data/datasources/contacts_remote_data_source.dart';
 import 'package:chat_app/features/contacts/data/repositories/contacts_repository_impl.dart';
 import 'package:chat_app/features/contacts/domain/usecases/add_contact_usecase.dart';
@@ -78,11 +82,18 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
+          create: (_) => StylesBloc(
+            convertToFormalUseCase: ConvertToFormalUseCase(messageRepository: messageRepository),
+            convertToSlangUseCase: ConvertToSlangUseCase(messageRepository: messageRepository),
+            convertToHumorousUseCase: ConvertToHumorousUseCase(messageRepository: messageRepository),
+            convertToRomanticUseCase: ConvertToRomanticUseCase(messageRepository: messageRepository),
+          ),
+        ),
+        BlocProvider(
           create: (_) => ChatBloc(
             fetchMessagesUseCase:
                 FetchMessagesUseCase(messageRepository: messageRepository),
             fetchDailyQuestionUseCase: FetchDailyQuestionUseCase(messageRepository: messageRepository),
-            convertToFormalUseCase: ConvertToFormalUseCase(messageRepository: messageRepository)
           ),
         ),
         BlocProvider(

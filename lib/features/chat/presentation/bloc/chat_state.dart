@@ -22,8 +22,3 @@ class DailyQuestionLoadedState extends ChatState {
   
 }
 
-class FormalMessageLoadedState extends ChatState {
-  final String message;
-  
-  FormalMessageLoadedState(this.message);
-}

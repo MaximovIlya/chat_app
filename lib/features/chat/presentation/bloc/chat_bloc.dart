@@ -1,6 +1,5 @@
 import 'package:chat_app/core/socket_service.dart';
 import 'package:chat_app/features/chat/domain/entities/message_entity.dart';
-import 'package:chat_app/features/chat/domain/usecases/convert_to_formal_use_case.dart';
 import 'package:chat_app/features/chat/domain/usecases/fetch_daily_question_use_case.dart';
 import 'package:chat_app/features/chat/domain/usecases/fetch_messages_use_case.dart';
 import 'package:chat_app/features/chat/presentation/bloc/chat_event.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final FetchMessagesUseCase fetchMessagesUseCase;
   final FetchDailyQuestionUseCase fetchDailyQuestionUseCase;
-  final ConvertToFormalUseCase convertToFormalUseCase;
   final SocketService _socketService = SocketService();
   final List<MessageEntity> _messages = [];
   final _storage = FlutterSecureStorage();
@@ -19,13 +17,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc({
     required this.fetchMessagesUseCase,
     required this.fetchDailyQuestionUseCase,
-    required this.convertToFormalUseCase,
   }) : super(ChatLoadingState()) {
     on<LoadMessagesEvent>(_onLoadMessages);
     on<SendMessageEvent>(_onSendMessage);
     on<RecieveMessageEvent>(_onRecieveMessage);
     on<LoadDailyQuestionEvent>(_onLoadDailyQuestion);
-    on<ConvertToFormalEvent>(_onConvertToFormal);
   }
 
   Future<void> _onLoadMessages(
@@ -90,14 +86,4 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
   }
 
-  Future<void> _onConvertToFormal(
-      ConvertToFormalEvent event, Emitter<ChatState> emit) async {
-    try {
-      final formalMessage = await convertToFormalUseCase(event.message);
-      emit(FormalMessageLoadedState(formalMessage));
-      
-    } catch (error) {
-      emit(ChatErrorState('Failed to convert to formal style'));
-    }
-  }
 }

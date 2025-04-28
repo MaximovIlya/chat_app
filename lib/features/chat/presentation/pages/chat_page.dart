@@ -2,6 +2,9 @@ import 'package:chat_app/core/theme.dart';
 import 'package:chat_app/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:chat_app/features/chat/presentation/bloc/chat_event.dart';
 import 'package:chat_app/features/chat/presentation/bloc/chat_state.dart';
+import 'package:chat_app/features/chat/presentation/bloc/styles_bloc.dart';
+import 'package:chat_app/features/chat/presentation/bloc/styles_event.dart';
+import 'package:chat_app/features/chat/presentation/bloc/styles_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -50,7 +53,28 @@ class _ChatPageState extends State<ChatPage> {
   void _convertToFormal() {
     final content = _messageController.text.trim();
     if (content.isNotEmpty) {
-      BlocProvider.of<ChatBloc>(context).add(ConvertToFormalEvent(content));
+      BlocProvider.of<StylesBloc>(context).add(ConvertToFormalEvent(content));
+    }
+  }
+
+  void _convertToSlang() {
+    final content = _messageController.text.trim();
+    if (content.isNotEmpty) {
+      BlocProvider.of<StylesBloc>(context).add(ConvertToSlangEvent(content));
+    }
+  }
+
+  void _convertTohumorous() {
+    final content = _messageController.text.trim();
+    if (content.isNotEmpty) {
+      BlocProvider.of<StylesBloc>(context).add(ConvertToHumorousEvent(content));
+    }
+  }
+
+  void _convertToRomatic() {
+    final content = _messageController.text.trim();
+    if (content.isNotEmpty) {
+      BlocProvider.of<StylesBloc>(context).add(ConvertToRomanticEvent(content));
     }
   }
 
@@ -131,9 +155,21 @@ class _ChatPageState extends State<ChatPage> {
           _messageStyleButtons(),
           if (_aiGeneratedMessage != null)
             _buildAiMessagePreview(_aiGeneratedMessage!),
-          BlocListener<ChatBloc, ChatState>(
+          BlocListener<StylesBloc, StylesState>(
             listener: (context, state) {
               if (state is FormalMessageLoadedState) {
+                setState(() {
+                  _aiGeneratedMessage = state.message;
+                });
+              } else if (state is SlangMessageLoadedState) {
+                setState(() {
+                  _aiGeneratedMessage = state.message;
+                });
+              } else if (state is HumorousMessageLoadedState) {
+                setState(() {
+                  _aiGeneratedMessage = state.message;
+                });
+              } else if (state is RomanticMessageLoadedState) {
                 setState(() {
                   _aiGeneratedMessage = state.message;
                 });
@@ -215,7 +251,7 @@ class _ChatPageState extends State<ChatPage> {
             width: 20,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: _convertToSlang,
             style: ElevatedButton.styleFrom(
               backgroundColor: DefaultColors.dailyQuestionColor,
             ),
@@ -230,7 +266,7 @@ class _ChatPageState extends State<ChatPage> {
             width: 20,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: _convertTohumorous,
             style: ElevatedButton.styleFrom(
               backgroundColor: DefaultColors.dailyQuestionColor,
             ),
@@ -245,7 +281,7 @@ class _ChatPageState extends State<ChatPage> {
             width: 20,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: _convertToRomatic,
             style: ElevatedButton.styleFrom(
               backgroundColor: DefaultColors.dailyQuestionColor,
             ),

@@ -27,4 +27,19 @@ class MessageRepositoryImpl implements MessageRepository {
   Future<String> convertToFormal(String message) async {
     return await remoteDataSource.convertToFormal(message);
   }
+
+  @override
+  Future<String> convertToHumorous(String message) async {
+    return await remoteDataSource.convertToHumorous(message);
+  }
+
+  @override
+  Future<String> convertToSlang(String message) async {
+    return await remoteDataSource.convertToSlang(message);
+  }
+
+  @override
+  Future<String> convertToRomantic(String message) async {
+    return await remoteDataSource.convertToRomantic(message);
+  }
 }

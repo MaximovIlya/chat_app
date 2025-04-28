@@ -6,4 +6,8 @@ abstract class MessageRepository {
   Future<void> sendMessage(MessageEntity message);
   Future<DailyQuestionEntity> fetchDailyQuestion(String conversationId);
   Future<String> convertToFormal(String message);
+  Future<String> convertToSlang(String message);
+  Future<String> convertToHumorous(String message);
+  Future<String> convertToRomantic(String message);
+
 }

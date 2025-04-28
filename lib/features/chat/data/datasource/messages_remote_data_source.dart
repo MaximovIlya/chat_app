@@ -54,4 +54,46 @@ class MessagesRemoteDataSource {
 
     return completer.future;
   }
+
+  Future<String> convertToSlang(String message) async {
+    final completer = Completer<String>();
+
+    
+    _socketService.socket.emit('slangStyle', message);
+
+    
+    _socketService.socket.once('slangMessage', (data) {
+      completer.complete(data);
+    });
+
+    return completer.future;
+  }
+
+  Future<String> convertToHumorous(String message) async {
+    final completer = Completer<String>();
+
+    
+    _socketService.socket.emit('humorousStyle', message);
+
+    
+    _socketService.socket.once('humorousMessage', (data) {
+      completer.complete(data);
+    });
+
+    return completer.future;
+  }
+
+  Future<String> convertToRomantic(String message) async {
+    final completer = Completer<String>();
+
+    
+    _socketService.socket.emit('romanticStyle', message);
+
+    
+    _socketService.socket.once('romanticMessage', (data) {
+      completer.complete(data);
+    });
+
+    return completer.future;
+  }
 }
