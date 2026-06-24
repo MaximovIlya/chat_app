@@ -1,0 +1,25 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+
+# Android NDK build cache
+.cxx/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Misc
+*.log
+.DS_Store
+.env

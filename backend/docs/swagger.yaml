@@ -1,0 +1,289 @@
+basePath: /api/v1
+definitions:
+  controllers.AddContactRequest:
+    properties:
+      phone_number:
+        type: string
+    type: object
+  controllers.ConversationRequest:
+    properties:
+      contact_id:
+        type: string
+    type: object
+  controllers.LoginRequest:
+    properties:
+      password:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  controllers.MessagesRequest:
+    properties:
+      conversation_id:
+        type: string
+    type: object
+  controllers.RegisterRequest:
+    properties:
+      first_name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      second_name:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for chat app
+  title: Chat App API
+  version: "1.0"
+paths:
+  /{conversationId}:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает сообщения по conversation_id
+      parameters:
+      - description: conversation ID
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.MessagesRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Получить все сообщения
+      tags:
+      - Messages
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Проверяет логин и возвращает успешный ответ
+      parameters:
+      - description: Данные для входа
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Авторизация пользователя
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт нового пользователя в системе
+      parameters:
+      - description: Данные для регистрации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Регистрация пользователя
+      tags:
+      - Auth
+  /contacts/:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список контактов пользователя по его ID
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Получить список контактов для пользователя
+      tags:
+      - Contacts
+    post:
+      consumes:
+      - application/json
+      description: Добавляет контакт по номеру телефона
+      parameters:
+      - description: Номер телефона
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.AddContactRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Добавить новый контакт
+      tags:
+      - Contacts
+  /conversations/:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает список переписок пользователя по его ID
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Получить список переписок для пользователя
+      tags:
+      - Conversations
+    post:
+      consumes:
+      - application/json
+      description: Создает новую переписку
+      parameters:
+      - description: ID контакта
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ConversationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Добавить новую переписку
+      tags:
+      - Conversations
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
